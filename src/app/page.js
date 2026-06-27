@@ -1,18 +1,13 @@
 export default function Home() {
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center gap-6 p-10">
-      <button className="btn btn-primary">Primary Button</button>
+    <main className="container mx-auto px-4 py-20 text-center">
+      <h1 className="text-5xl font-bold">
+        MediCare Connect
+      </h1>
 
-      <button className="btn btn-secondary">Secondary Button</button>
-
-      <button className="btn btn-success">Success Button</button>
-
-      <div className="card w-96 bg-base-100 shadow-xl">
-        <div className="card-body">
-          <h2 className="card-title">DaisyUI Test</h2>
-          <p>If buttons are colorful and rounded, DaisyUI works.</p>
-        </div>
-      </div>
+      <p className="mt-4 text-lg">
+        Hospital Appointment & Healthcare Management System
+      </p>
     </main>
   );
 }
