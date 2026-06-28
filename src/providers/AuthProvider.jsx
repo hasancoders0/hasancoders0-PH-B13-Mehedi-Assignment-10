@@ -8,6 +8,7 @@ import {
   signInWithPopup,
   signOut,
   onAuthStateChanged,
+  updateProfile,
 } from "firebase/auth";
 
 import { auth } from "@/firebase/firebase.config";
@@ -20,16 +21,39 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const createUser = (email, password) =>
-    createUserWithEmailAndPassword(auth, email, password);
+  const createUser = async (name, email, password) => {
+    const result = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
 
-  const loginUser = (email, password) =>
-    signInWithEmailAndPassword(auth, email, password);
+    await updateProfile(result.user, {
+      displayName: name,
+    });
 
-  const googleLogin = () =>
-    signInWithPopup(auth, googleProvider);
+    return result;
+  };
 
-  const logoutUser = () => signOut(auth);
+  const loginUser = (email, password) => {
+    return signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+  };
+
+  const googleLogin = () => {
+    return signInWithPopup(
+      auth,
+      googleProvider
+    );
+  };
+
+  const logoutUser = () => {
+    setLoading(true);
+    return signOut(auth);
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(
@@ -40,7 +64,7 @@ export default function AuthProvider({ children }) {
       }
     );
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, []);
 
   const value = {
