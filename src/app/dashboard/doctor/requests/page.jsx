@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import useAuth from "@/hooks/useAuth";
@@ -12,16 +13,12 @@ import {
 export default function DoctorRequestsPage() {
   const { user } = useAuth();
 
-  const [appointments, setAppointments] =
-    useState([]);
+  const [appointments, setAppointments] = useState([]);
 
   const loadAppointments = async () => {
     if (!user?.email) return;
 
-    const data =
-      await getDoctorAppointments(
-        user.email
-      );
+    const data = await getDoctorAppointments(user.email);
 
     setAppointments(data);
   };
@@ -30,23 +27,15 @@ export default function DoctorRequestsPage() {
     loadAppointments();
   }, [user]);
 
-  const handleStatus = async (
-    id,
-    status
-  ) => {
-    await updateAppointmentStatus(
-      id,
-      status
-    );
+  const handleStatus = async (id, status) => {
+    await updateAppointmentStatus(id, status);
 
     loadAppointments();
   };
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-8">
-        Appointment Requests
-      </h1>
+      <h1 className="text-3xl font-bold mb-8">Appointment Requests</h1>
 
       <div className="overflow-x-auto">
         <table className="table">
@@ -56,74 +45,78 @@ export default function DoctorRequestsPage() {
               <th>Date</th>
               <th>Time</th>
               <th>Status</th>
-              <th>Actions</th>
+              <th>Prescription</th>
             </tr>
           </thead>
 
           <tbody>
-            {appointments.map((item) => (
-              <tr key={item._id}>
-                <td>
-                  {item.patientName}
-                </td>
+            {appointments.length > 0 ? (
+              appointments.map((item) => (
+                <tr key={item._id}>
+                  <td>{item.patientName}</td>
 
-                <td>
-                  {item.appointmentDate}
-                </td>
+                  <td>{item.appointmentDate}</td>
 
-                <td>
-                  {item.appointmentTime}
-                </td>
+                  <td>{item.appointmentTime}</td>
 
-                <td>{item.status}</td>
+                  <td>{item.status}</td>
 
-                <td className="space-x-2">
-                  <button
-                    className="btn btn-success btn-xs"
-                    onClick={() =>
-                      handleStatus(
-                        item._id,
-                        "confirmed"
-                      )
-                    }
-                  >
-                    Accept
-                  </button>
+                  <td className="space-x-2">
+                    {item.status === "pending" && (
+                      <>
+                        <button
+                          className="btn btn-success btn-xs"
+                          onClick={() => handleStatus(item._id, "confirmed")}
+                        >
+                          Accept
+                        </button>
 
-                  <button
-                    className="btn btn-error btn-xs"
-                    onClick={() =>
-                      handleStatus(
-                        item._id,
-                        "cancelled"
-                      )
-                    }
-                  >
-                    Reject
-                  </button>
+                        <button
+                          className="btn btn-error btn-xs"
+                          onClick={() => handleStatus(item._id, "cancelled")}
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
 
-                  <button
-                    className="btn btn-info btn-xs"
-                    onClick={() =>
-                      handleStatus(
-                        item._id,
-                        "completed"
-                      )
-                    }
-                  >
-                    Complete
-                  </button>
+                    {item.status === "confirmed" && (
+                      <>
+                        <button
+                          className="btn btn-info btn-xs"
+                          onClick={() => handleStatus(item._id, "completed")}
+                        >
+                          Complete
+                        </button>
+                      </>
+                    )}
+
+                    {item.status === "completed" && !item.hasPrescription && (
+                      <Link
+                        href={`/dashboard/doctor/prescriptions/${item._id}`}
+                        className="btn btn-primary btn-xs"
+                      >
+                        Write Prescription
+                      </Link>
+                    )}
+
+                    {item.hasPrescription && (
+                      <span className="badge badge-success">
+                        Prescription Created
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="text-center py-10">
+                  No appointments found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
-
-        {appointments.length === 0 && (
-          <p className="text-center py-10">
-            No appointments found.
-          </p>
-        )}
       </div>
     </div>
   );

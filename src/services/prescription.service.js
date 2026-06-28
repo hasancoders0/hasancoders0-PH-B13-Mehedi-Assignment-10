@@ -4,16 +4,15 @@ const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   "http://localhost:5000";
 
-export const createPrescription = async (
-  prescriptionData
-) => {
-  const { data } = await axios.post(
-    `${API_URL}/api/prescriptions`,
-    prescriptionData
-  );
+export const createPrescription =
+  async (prescriptionData) => {
+    const { data } = await axios.post(
+      `${API_URL}/api/prescriptions`,
+      prescriptionData
+    );
 
-  return data;
-};
+    return data;
+  };
 
 export const getPatientPrescriptions =
   async (email) => {
@@ -22,4 +21,13 @@ export const getPatientPrescriptions =
     );
 
     return data.prescriptions;
+  };
+
+export const getPrescriptionById =
+  async (id) => {
+    const { data } = await axios.get(
+      `${API_URL}/api/prescriptions/${id}`
+    );
+
+    return data.prescription;
   };
