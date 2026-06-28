@@ -11,6 +11,8 @@ import {
   updateProfile,
 } from "firebase/auth";
 
+import { saveUserToDB, getJWTToken } from "@/services/auth.service";
+
 import { auth } from "@/firebase/firebase.config";
 
 export const AuthContext = createContext(null);
@@ -22,32 +24,44 @@ export default function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const createUser = async (name, email, password) => {
-    const result = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+    const result = await createUserWithEmailAndPassword(auth, email, password);
 
     await updateProfile(result.user, {
       displayName: name,
     });
 
+    await saveUserToDB({
+      displayName: name,
+      email,
+    });
+
+    const token = await getJWTToken(email);
+
+    localStorage.setItem("access-token", token);
+
     return result;
   };
 
-  const loginUser = (email, password) => {
-    return signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
+  const loginUser = async (email, password) => {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+
+    const token = await getJWTToken(email);
+
+    localStorage.setItem("access-token", token);
+
+    return result;
   };
 
-  const googleLogin = () => {
-    return signInWithPopup(
-      auth,
-      googleProvider
-    );
+  const googleLogin = async () => {
+    const result = await signInWithPopup(auth, googleProvider);
+
+    await saveUserToDB(result.user);
+
+    const token = await getJWTToken(result.user.email);
+
+    localStorage.setItem("access-token", token);
+
+    return result;
   };
 
   const logoutUser = () => {
@@ -56,13 +70,10 @@ export default function AuthProvider({ children }) {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(
-      auth,
-      (currentUser) => {
-        setUser(currentUser);
-        setLoading(false);
-      }
-    );
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
 
     return () => unsubscribe();
   }, []);
@@ -76,9 +87,5 @@ export default function AuthProvider({ children }) {
     logoutUser,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
