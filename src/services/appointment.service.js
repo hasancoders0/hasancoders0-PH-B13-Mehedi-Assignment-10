@@ -27,12 +27,34 @@ export const getMyAppointments = async (
   return data.appointments;
 };
 
-// Cancle appointments by patient
+// Cancel appointment
 export const cancelAppointment = async (
   id
 ) => {
   const { data } = await axios.patch(
     `${API_URL}/api/appointments/${id}/cancel`
+  );
+
+  return data;
+};
+
+// Get single appointment
+export const getAppointmentById = async (
+  id
+) => {
+  const { data } = await axios.get(
+    `${API_URL}/api/appointments/${id}`
+  );
+
+  return data.appointment;
+};
+
+// Confirm payment
+export const confirmPayment = async (
+  id
+) => {
+  const { data } = await axios.patch(
+    `${API_URL}/api/appointments/${id}/pay`
   );
 
   return data;

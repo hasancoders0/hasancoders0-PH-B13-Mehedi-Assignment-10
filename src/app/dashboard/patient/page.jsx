@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import useAuth from "@/hooks/useAuth";
@@ -18,9 +18,7 @@ export default function PatientDashboardPage() {
     if (!user?.email) return;
 
     try {
-      const data = await getMyAppointments(
-        user.email
-      );
+      const data = await getMyAppointments(user.email);
 
       setAppointments(data);
     } catch (error) {
@@ -33,9 +31,7 @@ export default function PatientDashboardPage() {
   }, [user]);
 
   const handleCancel = async (id) => {
-    const confirmCancel = confirm(
-      "Cancel this appointment?"
-    );
+    const confirmCancel = confirm("Cancel this appointment?");
 
     if (!confirmCancel) return;
 
@@ -54,14 +50,10 @@ export default function PatientDashboardPage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-8">
-        My Appointments
-      </h1>
+      <h1 className="text-3xl font-bold mb-8">My Appointments</h1>
 
       {appointments.length === 0 ? (
-        <p className="text-center py-10">
-          No appointments found.
-        </p>
+        <p className="text-center py-10">No appointments found.</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="table">
@@ -81,13 +73,9 @@ export default function PatientDashboardPage() {
                 <tr key={item._id}>
                   <td>{item.doctorName}</td>
 
-                  <td>
-                    {item.appointmentDate}
-                  </td>
+                  <td>{item.appointmentDate}</td>
 
-                  <td>
-                    {item.appointmentTime}
-                  </td>
+                  <td>{item.appointmentTime}</td>
 
                   <td>
                     <span
@@ -102,33 +90,28 @@ export default function PatientDashboardPage() {
                   </td>
 
                   <td>
-                    <span
-                      className={`badge ${
-                        item.paymentStatus ===
-                        "paid"
-                          ? "badge-success"
-                          : "badge-outline"
-                      }`}
-                    >
-                      {item.paymentStatus}
-                    </span>
+                    {item.paymentStatus === "paid" ? (
+                      <span className="badge badge-success">Paid</span>
+                    ) : (
+                      <Link
+                        href={`/payment/${item._id}`}
+                        className="btn btn-primary btn-sm"
+                      >
+                        Pay Now
+                      </Link>
+                    )}
                   </td>
 
                   <td>
-                    {item.status ===
-                    "pending" ? (
+                    {item.status === "pending" ? (
                       <button
-                        onClick={() =>
-                          handleCancel(item._id)
-                        }
+                        onClick={() => handleCancel(item._id)}
                         className="btn btn-error btn-sm"
                       >
                         Cancel
                       </button>
                     ) : (
-                      <span className="text-red-500">
-                        Cancelled
-                      </span>
+                      <span className="text-red-500">Cancelled</span>
                     )}
                   </td>
                 </tr>

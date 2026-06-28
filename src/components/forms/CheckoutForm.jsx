@@ -2,17 +2,23 @@
 
 import { useState } from "react";
 
+import { useRouter } from "next/navigation";
+
 import {
   CardElement,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
 
+import { confirmPayment } from "@/services/appointment.service";
+
 export default function CheckoutForm({
   clientSecret,
+  appointmentId,
 }) {
   const stripe = useStripe();
   const elements = useElements();
+  const router = useRouter();
 
   const [loading, setLoading] =
     useState(false);
@@ -27,11 +33,11 @@ export default function CheckoutForm({
       !stripe ||
       !elements ||
       !clientSecret
-    )
+    ) {
       return;
+    }
 
     setLoading(true);
-    setMessage("");
 
     const card =
       elements.getElement(CardElement);
@@ -52,8 +58,14 @@ export default function CheckoutForm({
       paymentIntent.status ===
       "succeeded"
     ) {
-      setMessage(
-        "✅ Payment successful!"
+      await confirmPayment(
+        appointmentId
+      );
+
+      alert("Payment successful!");
+
+      router.push(
+        "/dashboard/patient"
       );
     }
 
@@ -80,7 +92,7 @@ export default function CheckoutForm({
       </button>
 
       {message && (
-        <p className="text-center">
+        <p className="text-red-500">
           {message}
         </p>
       )}
