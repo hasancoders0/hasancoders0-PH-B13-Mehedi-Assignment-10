@@ -7,3 +7,15 @@ export const getDashboardStats = async () => {
 
   return data.stats;
 };
+
+export const getAllUsers = async () => {
+  const { data } = await axios.get(`${API_URL}/api/admin/users`);
+
+  return data.users;
+};
+
+export const makeAdmin = async (id) => {
+  const { data } = await axios.patch(`${API_URL}/api/admin/users/${id}/admin`);
+
+  return data;
+};
