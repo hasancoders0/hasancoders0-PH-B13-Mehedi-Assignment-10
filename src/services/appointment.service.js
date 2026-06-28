@@ -26,3 +26,14 @@ export const getMyAppointments = async (
 
   return data.appointments;
 };
+
+// Cancle appointments by patient
+export const cancelAppointment = async (
+  id
+) => {
+  const { data } = await axios.patch(
+    `${API_URL}/api/appointments/${id}/cancel`
+  );
+
+  return data;
+};

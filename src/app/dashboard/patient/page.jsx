@@ -3,18 +3,54 @@
 import { useEffect, useState } from "react";
 
 import useAuth from "@/hooks/useAuth";
-import { getMyAppointments } from "@/services/appointment.service";
+
+import {
+  getMyAppointments,
+  cancelAppointment,
+} from "@/services/appointment.service";
 
 export default function PatientDashboardPage() {
   const { user } = useAuth();
 
   const [appointments, setAppointments] = useState([]);
 
-  useEffect(() => {
-    if (user?.email) {
-      getMyAppointments(user.email).then(setAppointments);
+  const loadAppointments = async () => {
+    if (!user?.email) return;
+
+    try {
+      const data = await getMyAppointments(
+        user.email
+      );
+
+      setAppointments(data);
+    } catch (error) {
+      console.error(error);
     }
+  };
+
+  useEffect(() => {
+    loadAppointments();
   }, [user]);
+
+  const handleCancel = async (id) => {
+    const confirmCancel = confirm(
+      "Cancel this appointment?"
+    );
+
+    if (!confirmCancel) return;
+
+    try {
+      await cancelAppointment(id);
+
+      await loadAppointments();
+
+      alert("Appointment cancelled successfully");
+    } catch (error) {
+      console.error(error);
+
+      alert("Failed to cancel appointment");
+    }
+  };
 
   return (
     <div className="p-8">
@@ -22,37 +58,85 @@ export default function PatientDashboardPage() {
         My Appointments
       </h1>
 
-      <div className="overflow-x-auto">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Doctor</th>
-              <th>Date</th>
-              <th>Time</th>
-              <th>Status</th>
-              <th>Payment</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {appointments.map((item) => (
-              <tr key={item._id}>
-                <td>{item.doctorName}</td>
-                <td>{item.appointmentDate}</td>
-                <td>{item.appointmentTime}</td>
-                <td>{item.status}</td>
-                <td>{item.paymentStatus}</td>
+      {appointments.length === 0 ? (
+        <p className="text-center py-10">
+          No appointments found.
+        </p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
 
-        {appointments.length === 0 && (
-          <p className="text-center py-10">
-            No appointments found.
-          </p>
-        )}
-      </div>
+            <tbody>
+              {appointments.map((item) => (
+                <tr key={item._id}>
+                  <td>{item.doctorName}</td>
+
+                  <td>
+                    {item.appointmentDate}
+                  </td>
+
+                  <td>
+                    {item.appointmentTime}
+                  </td>
+
+                  <td>
+                    <span
+                      className={`badge ${
+                        item.status === "cancelled"
+                          ? "badge-error"
+                          : "badge-warning"
+                      }`}
+                    >
+                      {item.status}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span
+                      className={`badge ${
+                        item.paymentStatus ===
+                        "paid"
+                          ? "badge-success"
+                          : "badge-outline"
+                      }`}
+                    >
+                      {item.paymentStatus}
+                    </span>
+                  </td>
+
+                  <td>
+                    {item.status ===
+                    "pending" ? (
+                      <button
+                        onClick={() =>
+                          handleCancel(item._id)
+                        }
+                        className="btn btn-error btn-sm"
+                      >
+                        Cancel
+                      </button>
+                    ) : (
+                      <span className="text-red-500">
+                        Cancelled
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
