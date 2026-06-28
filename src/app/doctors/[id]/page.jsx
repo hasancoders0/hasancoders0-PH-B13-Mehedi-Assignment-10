@@ -36,9 +36,15 @@ export default function DoctorDetailsPage() {
       const appointmentData = {
         doctorId: doctor._id,
         doctorName: doctor.name,
+        doctorEmail: doctor.email,
+
+        patientName: user.displayName || "Patient",
         patientEmail: user.email,
+
         appointmentDate: date,
         appointmentTime: time,
+
+        consultationFee: doctor.consultationFee,
       };
 
       await createAppointment(appointmentData);
@@ -54,53 +60,33 @@ export default function DoctorDetailsPage() {
   };
 
   if (!doctor) {
-    return (
-      <div className="text-center py-20">
-        Loading...
-      </div>
-    );
+    return <div className="text-center py-20">Loading...</div>;
   }
 
   return (
     <div className="max-w-5xl mx-auto py-12 px-4">
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">
-          <h1 className="text-4xl font-bold">
-            {doctor.name}
-          </h1>
+          <h1 className="text-4xl font-bold">{doctor.name}</h1>
 
-          <p className="text-lg mt-2">
-            {doctor.specialty}
-          </p>
+          <p className="text-lg mt-2">{doctor.specialization}</p>
 
-          <p className="mt-2">
-            Hospital: {doctor.hospital}
-          </p>
-
-          <p>
-            Experience: {doctor.experience} years
-          </p>
+          <p>Experience: {doctor.experience} years</p>
 
           <div className="mt-8 space-y-4">
             <input
               type="date"
               className="input input-bordered w-full"
               value={date}
-              onChange={(e) =>
-                setDate(e.target.value)
-              }
+              onChange={(e) => setDate(e.target.value)}
             />
 
             <select
               className="select select-bordered w-full"
               value={time}
-              onChange={(e) =>
-                setTime(e.target.value)
-              }
+              onChange={(e) => setTime(e.target.value)}
             >
-              <option value="">
-                Select Time
-              </option>
+              <option value="">Select Time</option>
 
               <option>10:00 AM</option>
               <option>11:00 AM</option>

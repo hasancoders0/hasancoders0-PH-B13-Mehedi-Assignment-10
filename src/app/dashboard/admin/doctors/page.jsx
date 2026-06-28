@@ -1,8 +1,12 @@
 "use client";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import { getAllDoctors, deleteDoctor } from "@/services/admin-doctor.service";
+import {
+  getAllDoctors,
+  deleteDoctor,
+} from "@/services/admin-doctor.service";
 
 export default function AdminDoctorsPage() {
   const [doctors, setDoctors] = useState([]);
@@ -17,7 +21,9 @@ export default function AdminDoctorsPage() {
   }, []);
 
   const handleDelete = async (id) => {
-    const ok = confirm("Delete this doctor?");
+    const ok = confirm(
+      "Delete this doctor?"
+    );
 
     if (!ok) return;
 
@@ -29,9 +35,14 @@ export default function AdminDoctorsPage() {
   return (
     <div className="p-8">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">Manage Doctors</h1>
+        <h1 className="text-3xl font-bold">
+          Manage Doctors
+        </h1>
 
-        <Link href="/dashboard/admin/doctors/add" className="btn btn-primary">
+        <Link
+          href="/dashboard/admin/doctors/add"
+          className="btn btn-primary"
+        >
           Add Doctor
         </Link>
       </div>
@@ -41,8 +52,9 @@ export default function AdminDoctorsPage() {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Specialty</th>
-              <th>Hospital</th>
+              <th>Email</th>
+              <th>Specialization</th>
+              <th>Fee</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -52,14 +64,25 @@ export default function AdminDoctorsPage() {
               <tr key={doctor._id}>
                 <td>{doctor.name}</td>
 
-                <td>{doctor.specialty}</td>
+                <td>{doctor.email}</td>
 
-                <td>{doctor.hospital}</td>
+                <td>
+                  {doctor.specialization}
+                </td>
+
+                <td>
+                  ৳
+                  {doctor.consultationFee}
+                </td>
 
                 <td>
                   <button
                     className="btn btn-error btn-sm"
-                    onClick={() => handleDelete(doctor._id)}
+                    onClick={() =>
+                      handleDelete(
+                        doctor._id
+                      )
+                    }
                   >
                     Delete
                   </button>
@@ -67,10 +90,13 @@ export default function AdminDoctorsPage() {
               </tr>
             ))}
           </tbody>
-          {doctors.length === 0 && (
-            <div className="text-center py-10">No doctors found.</div>
-          )}
         </table>
+
+        {doctors.length === 0 && (
+          <div className="text-center py-10">
+            No doctors found.
+          </div>
+        )}
       </div>
     </div>
   );

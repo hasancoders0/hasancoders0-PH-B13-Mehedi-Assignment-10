@@ -27,6 +27,16 @@ export const getMyAppointments = async (
   return data.appointments;
 };
 
+// Get appointmetns by doctor
+export const getDoctorAppointments =
+  async (email) => {
+    const { data } = await axios.get(
+      `${API_URL}/api/appointments/doctor/${email}`
+    );
+
+    return data.appointments;
+  };
+
 // Cancel appointment
 export const cancelAppointment = async (
   id
@@ -55,6 +65,20 @@ export const confirmPayment = async (
 ) => {
   const { data } = await axios.patch(
     `${API_URL}/api/appointments/${id}/pay`
+  );
+
+  return data;
+};
+
+export const updateAppointmentStatus = async (
+  id,
+  status
+) => {
+  const { data } = await axios.patch(
+    `${API_URL}/api/appointments/${id}/status`,
+    {
+      status,
+    }
   );
 
   return data;
