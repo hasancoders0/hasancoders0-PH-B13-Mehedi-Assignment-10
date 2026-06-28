@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -31,20 +32,20 @@ export default function PatientDashboardPage() {
   }, [user]);
 
   const handleCancel = async (id) => {
-    const confirmCancel = confirm("Cancel this appointment?");
+    const ok = confirm("Cancel this appointment?");
 
-    if (!confirmCancel) return;
+    if (!ok) return;
 
     try {
       await cancelAppointment(id);
 
       await loadAppointments();
 
-      alert("Appointment cancelled successfully");
+      alert("Appointment cancelled successfully.");
     } catch (error) {
       console.error(error);
 
-      alert("Failed to cancel appointment");
+      alert("Failed to cancel appointment.");
     }
   };
 
@@ -64,7 +65,7 @@ export default function PatientDashboardPage() {
                 <th>Time</th>
                 <th>Status</th>
                 <th>Payment</th>
-                <th>Action</th>
+                <th>Actions</th>
               </tr>
             </thead>
 
@@ -80,9 +81,13 @@ export default function PatientDashboardPage() {
                   <td>
                     <span
                       className={`badge ${
-                        item.status === "cancelled"
-                          ? "badge-error"
-                          : "badge-warning"
+                        item.status === "completed"
+                          ? "badge-success"
+                          : item.status === "confirmed"
+                            ? "badge-info"
+                            : item.status === "cancelled"
+                              ? "badge-error"
+                              : "badge-warning"
                       }`}
                     >
                       {item.status}
@@ -102,16 +107,35 @@ export default function PatientDashboardPage() {
                     )}
                   </td>
 
-                  <td>
-                    {item.status === "pending" ? (
+                  <td className="space-x-2">
+                    {/* Cancel */}
+                    {item.status === "pending" && (
                       <button
                         onClick={() => handleCancel(item._id)}
                         className="btn btn-error btn-sm"
                       >
                         Cancel
                       </button>
-                    ) : (
-                      <span className="text-red-500">Cancelled</span>
+                    )}
+
+                    {/* Review */}
+                    {item.status === "completed" && !item.hasReview && (
+                      <Link
+                        href={`/dashboard/patient/review/${item._id}`}
+                        className="btn btn-secondary btn-sm"
+                      >
+                        Write Review
+                      </Link>
+                    )}
+
+                    {/* Reviewed */}
+                    {item.hasReview && (
+                      <span className="badge badge-success">Reviewed</span>
+                    )}
+
+                    {/* Cancelled */}
+                    {item.status === "cancelled" && (
+                      <span className="badge badge-error">Cancelled</span>
                     )}
                   </td>
                 </tr>
