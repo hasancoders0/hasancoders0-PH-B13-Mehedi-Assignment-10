@@ -1,23 +1,24 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
 import useRole from "@/hooks/useRole";
 
 export default function DashboardPage() {
+  const router = useRouter();
+
   const { role, loading } = useRole();
 
-  if (loading) {
-    return <h2>Loading...</h2>;
-  }
+  useEffect(() => {
+    if (!loading && role) {
+      router.push(`/dashboard/${role}`);
+    }
+  }, [role, loading, router]);
 
   return (
     <div className="p-10">
-      <h1 className="text-3xl font-bold">
-        Dashboard
-      </h1>
-
-      <p className="mt-4">
-        Current Role: {role}
-      </p>
+      Redirecting...
     </div>
   );
 }
