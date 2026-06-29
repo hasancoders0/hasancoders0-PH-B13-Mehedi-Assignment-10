@@ -3,16 +3,22 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { HiMenu, HiX } from "react-icons/hi";
+import {
+  FaHeartbeat,
+  FaBars,
+  FaTimes,
+  FaUserCircle,
+  FaThLarge,
+  FaSignOutAlt,
+  FaSignInAlt,
+  FaUserPlus,
+} from "react-icons/fa";
 
-import Logo from "./Logo";
 import useAuth from "@/hooks/useAuth";
 
 export default function Navbar() {
   const pathname = usePathname();
-
   const { user, logoutUser } = useAuth();
-
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = async () => {
@@ -25,52 +31,43 @@ export default function Navbar() {
   };
 
   const navItems = [
-    {
-      label: "Home",
-      href: "/",
-    },
-    {
-      label: "Find Doctors",
-      href: "/find-doctors",
-    },
-    {
-      label: "About",
-      href: "/about",
-    },
-    {
-      label: "Contact",
-      href: "/contact",
-    },
+    { label: "Home", href: "/" },
+    { label: "Find Doctors", href: "/find-doctors" },
+    { label: "About", href: "/about" },
+    { label: "Contact", href: "/contact" },
   ];
 
   const isActive = (href) => {
-    if (href === "/") {
-      return pathname === "/";
-    }
-
+    if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   };
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-base-100 border-b">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-base-200 shadow-sm font-sans">
         <div className="container mx-auto px-4">
-          <div className="navbar min-h-20 px-0">
+          <div className="navbar min-h-[72px] px-0">
             {/* Logo */}
             <div className="flex-1">
-              <Logo />
+              <Link
+                href="/"
+                className="flex items-center gap-2 text-2xl font-bold tracking-tight transition-transform hover:scale-105"
+              >
+                <FaHeartbeat className="text-primary text-3xl" />
+                <span className="text-neutral">MediCare</span>
+              </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <ul className="hidden lg:flex items-center gap-8">
+            <ul className="hidden lg:flex items-center gap-2">
               {navItems.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className={`transition-colors ${
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                       isActive(item.href)
-                        ? "text-primary font-semibold"
-                        : "hover:text-primary"
+                        ? "bg-primary text-primary-content shadow-sm"
+                        : "text-neutral/70 hover:text-primary hover:bg-primary/10"
                     }`}
                   >
                     {item.label}
@@ -79,58 +76,87 @@ export default function Navbar() {
               ))}
             </ul>
 
-            {/* Desktop User */}
-            <div className="hidden lg:flex items-center ml-8">
+            {/* Desktop User Actions */}
+            <div className="hidden lg:flex items-center ml-6 gap-4">
               {user ? (
                 <div className="dropdown dropdown-end">
                   <div
                     tabIndex={0}
                     role="button"
-                    className="btn btn-ghost btn-circle avatar"
+                    className="btn btn-ghost btn-circle avatar hover:ring-2 hover:ring-primary hover:ring-offset-2 transition-all rounded-full"
                   >
-                    <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                      <img
-                        src={
-                          user.photoURL ||
-                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            user.displayName || "User",
-                          )}`
-                        }
-                        alt={user.displayName || "User"}
-                      />
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-base-200 flex items-center justify-center">
+                      {user.photoURL ? (
+                        <img
+                          src={user.photoURL}
+                          alt={user.displayName || "User"}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <FaUserCircle className="w-full h-full text-base-300" />
+                      )}
                     </div>
                   </div>
 
                   <ul
                     tabIndex={0}
-                    className="menu menu-sm dropdown-content mt-3 z-[100] p-2 shadow bg-base-100 rounded-box w-60"
+                    className="menu menu-sm dropdown-content mt-3 z-[100] p-2 shadow-xl bg-white rounded-xl w-72 border border-base-200"
                   >
-                    <li className="px-3 py-2 border-b mb-2">
-                      <p className="font-semibold">
-                        {user.displayName || "User"}
-                      </p>
-
-                      <p className="text-xs opacity-70 break-all">
-                        {user.email}
-                      </p>
+                    <li className="p-4 flex items-center gap-3 border-b border-base-200 mb-2">
+                      <div className="avatar">
+                        <div className="w-12 h-12 rounded-full overflow-hidden bg-base-200 flex items-center justify-center">
+                          {user.photoURL ? (
+                            <img
+                              src={user.photoURL}
+                              alt={user.displayName || "User"}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <FaUserCircle className="w-full h-full text-base-300" />
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex-1 overflow-hidden">
+                        <p className="font-bold text-neutral truncate">
+                          {user.displayName || "User"}
+                        </p>
+                        <p className="text-xs text-neutral/60 truncate">
+                          {user.email}
+                        </p>
+                      </div>
                     </li>
 
                     <li>
-                      <Link href="/dashboard">Dashboard</Link>
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center gap-3 text-neutral hover:text-primary transition-colors rounded-lg py-2"
+                      >
+                        <FaThLarge /> Dashboard
+                      </Link>
                     </li>
 
                     <li>
-                      <button onClick={handleLogout}>Logout</button>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 text-error hover:bg-error hover:text-white transition-colors rounded-lg py-2 w-full"
+                      >
+                        <FaSignOutAlt /> Logout
+                      </button>
                     </li>
                   </ul>
                 </div>
               ) : (
                 <div className="flex items-center gap-3">
-                  <Link href="/login" className="btn btn-ghost btn-sm">
+                  <Link
+                    href="/login"
+                    className="btn btn-sm btn-outline btn-primary rounded-full font-medium"
+                  >
                     Login
                   </Link>
-
-                  <Link href="/register" className="btn btn-primary btn-sm">
+                  <Link
+                    href="/register"
+                    className="btn btn-sm btn-primary rounded-full font-medium shadow-sm hover:shadow-md transition-all"
+                  >
                     Register
                   </Link>
                 </div>
@@ -141,8 +167,9 @@ export default function Navbar() {
             <button
               className="btn btn-ghost btn-circle lg:hidden"
               onClick={() => setIsOpen(true)}
+              aria-label="Open menu"
             >
-              <HiMenu className="text-3xl" />
+              <FaBars className="text-2xl text-neutral" />
             </button>
           </div>
         </div>
@@ -151,37 +178,48 @@ export default function Navbar() {
       {/* Mobile Offcanvas */}
       <div
         className={`fixed inset-0 z-[100] transition-all duration-300 ${
-          isOpen ? "visible bg-black/50" : "invisible bg-transparent"
+          isOpen
+            ? "visible bg-black/40 backdrop-blur-sm"
+            : "invisible bg-transparent"
         }`}
         onClick={() => setIsOpen(false)}
       >
         <div
-          className={`absolute right-0 top-0 h-full w-80 bg-base-100 shadow-2xl transition-transform duration-300 ${
+          className={`absolute right-0 top-0 h-full w-80 bg-white shadow-2xl transition-transform duration-300 ease-in-out ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="flex items-center justify-between p-5 border-b">
-            <Logo />
-
+          {/* Drawer Header */}
+          <div className="flex items-center justify-between p-5 border-b border-base-200">
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-xl font-bold"
+              onClick={() => setIsOpen(false)}
+            >
+              <FaHeartbeat className="text-primary text-2xl" />
+              <span className="text-neutral">MediCare</span>
+            </Link>
             <button
               className="btn btn-ghost btn-circle"
               onClick={() => setIsOpen(false)}
+              aria-label="Close menu"
             >
-              <HiX className="text-3xl" />
+              <FaTimes className="text-2xl text-neutral" />
             </button>
           </div>
 
-          {/* Navigation */}
-          <ul className="flex flex-col p-6 gap-4">
+          {/* Drawer Navigation */}
+          <ul className="flex flex-col p-4 gap-2">
             {navItems.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className={`block py-2 ${
-                    isActive(item.href) ? "text-primary font-semibold" : ""
+                  className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
+                    isActive(item.href)
+                      ? "bg-primary text-primary-content shadow-sm"
+                      : "text-neutral/80 hover:bg-base-200"
                   }`}
                 >
                   {item.label}
@@ -193,64 +231,63 @@ export default function Navbar() {
           <div className="divider my-0" />
 
           {/* Mobile Auth */}
-          <div className="p-6">
+          <div className="p-4">
             {user ? (
               <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4 p-3 bg-base-100 rounded-xl border border-base-200">
                   <div className="avatar">
-                    <div className="w-14 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                      <img
-                        src={
-                          user.photoURL ||
-                          `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                            user.displayName || "User",
-                          )}`
-                        }
-                        alt={user.displayName || "User"}
-                      />
+                    <div className="w-14 h-14 rounded-full overflow-hidden bg-base-200 flex items-center justify-center">
+                      {user.photoURL ? (
+                        <img
+                          src={user.photoURL}
+                          alt={user.displayName || "User"}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <FaUserCircle className="w-full h-full text-base-300" />
+                      )}
                     </div>
                   </div>
-
-                  <div>
-                    <h3 className="font-semibold">
+                  <div className="overflow-hidden">
+                    <h3 className="font-bold text-neutral truncate">
                       {user.displayName || "User"}
                     </h3>
-
-                    <p className="text-xs opacity-70 break-all">{user.email}</p>
+                    <p className="text-xs text-neutral/60 truncate">
+                      {user.email}
+                    </p>
                   </div>
                 </div>
 
                 <Link
                   href="/dashboard"
-                  className="btn btn-primary w-full"
+                  className="btn btn-primary w-full rounded-xl"
                   onClick={() => setIsOpen(false)}
                 >
-                  Dashboard
+                  <FaThLarge /> Dashboard
                 </Link>
 
                 <button
                   onClick={handleLogout}
-                  className="btn btn-outline w-full"
+                  className="btn btn-outline btn-error w-full rounded-xl"
                 >
-                  Logout
+                  <FaSignOutAlt /> Logout
                 </button>
               </div>
             ) : (
               <div className="flex flex-col gap-3">
                 <Link
                   href="/login"
-                  className="btn btn-outline w-full"
+                  className="btn btn-outline btn-primary w-full rounded-xl"
                   onClick={() => setIsOpen(false)}
                 >
-                  Login
+                  <FaSignInAlt /> Login
                 </Link>
-
                 <Link
                   href="/register"
-                  className="btn btn-primary w-full"
+                  className="btn btn-primary w-full rounded-xl shadow-sm"
                   onClick={() => setIsOpen(false)}
                 >
-                  Register
+                  <FaUserPlus /> Register
                 </Link>
               </div>
             )}

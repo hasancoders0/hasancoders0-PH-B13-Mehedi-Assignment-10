@@ -1,22 +1,62 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  FaCalendarDays,
+  FaClock,
+  FaCircleCheck,
+  FaFlagCheckered,
+  FaMoneyCheckDollar,
+  FaCircleDot,
+  FaListCheck,
+} from "react-icons/fa6";
 
 import useAuth from "@/hooks/useAuth";
 import { getDoctorAppointments } from "@/services/appointment.service";
 
+const statCards = [
+  {
+    key: "total",
+    label: "Total Appointments",
+    icon: FaCalendarDays,
+    color: "primary",
+  },
+  {
+    key: "pending",
+    label: "Pending",
+    icon: FaClock,
+    color: "warning",
+  },
+  {
+    key: "confirmed",
+    label: "Confirmed",
+    icon: FaCircleCheck,
+    color: "info",
+  },
+  {
+    key: "completed",
+    label: "Completed",
+    icon: FaFlagCheckered,
+    color: "success",
+  },
+  {
+    key: "revenue",
+    label: "Revenue",
+    icon: FaMoneyCheckDollar,
+    color: "primary",
+    prefix: true,
+  },
+];
+
 export default function DoctorDashboardPage() {
   const { user } = useAuth();
-
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const loadAppointments = async () => {
     try {
       if (!user?.email) return;
-
       const data = await getDoctorAppointments(user.email);
-
       setAppointments(data);
     } catch (error) {
       console.error(error);
@@ -54,93 +94,120 @@ export default function DoctorDashboardPage() {
       0,
     );
 
+  const getStatValue = (key) => {
+    if (key === "total") return appointments.length;
+    if (key === "pending") return pendingAppointments.length;
+    if (key === "confirmed") return confirmedAppointments.length;
+    if (key === "completed") return completedAppointments.length;
+    if (key === "revenue") return `৳${totalRevenue}`;
+    return 0;
+  };
+
+  const summaryItems = [
+    {
+      label: "Pending Requests",
+      value: pendingAppointments.length,
+      color: "warning",
+    },
+    {
+      label: "Confirmed Appointments",
+      value: confirmedAppointments.length,
+      color: "info",
+    },
+    {
+      label: "Completed Consultations",
+      value: completedAppointments.length,
+      color: "success",
+    },
+    {
+      label: "Cancelled Appointments",
+      value: cancelledAppointments.length,
+      color: "error",
+    },
+  ];
+
   if (loading) {
-    return <div className="text-center py-20">Loading dashboard...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
   }
 
   return (
     <div>
+      {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Doctor Dashboard</h1>
-
-        <p className="text-sm opacity-70 mt-2">
-          Overview of appointments and earnings.
+        <h1 className="text-3xl font-extrabold tracking-tight">
+          Doctor Dashboard
+        </h1>
+        <p className="text-sm opacity-50 mt-1 font-light">
+          Overview of your appointments and earnings.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6">
-        <div className="card bg-base-100 shadow border">
-          <div className="card-body">
-            <h3 className="font-semibold">Total Appointments</h3>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-5">
+        {statCards.map(({ key, label, icon: Icon, color, prefix = false }) => (
+          <div
+            key={key}
+            className="group relative bg-base-100 border border-base-300/60 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:shadow-base-300/40 hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+          >
+            {/* Hover accent line */}
+            <div
+              className={`absolute inset-x-0 top-0 h-[3px] bg-${color} scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`}
+            />
 
-            <p className="text-4xl font-bold">{appointments.length}</p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-widest opacity-40">
+                  {label}
+                </p>
+                <h3
+                  className={`text-2xl lg:text-3xl font-extrabold tracking-tight mt-2 ${
+                    prefix
+                      ? "text-primary"
+                      : "bg-gradient-to-b from-base-content to-base-content/60 bg-clip-text text-transparent"
+                  }`}
+                >
+                  {getStatValue(key)}
+                </h3>
+              </div>
+
+              <div
+                className={`w-11 h-11 rounded-2xl bg-${color}/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
+              >
+                <Icon className={`text-lg text-${color}`} />
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div className="card bg-base-100 shadow border">
-          <div className="card-body">
-            <h3 className="font-semibold">Pending</h3>
-
-            <p className="text-4xl font-bold text-warning">
-              {pendingAppointments.length}
-            </p>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow border">
-          <div className="card-body">
-            <h3 className="font-semibold">Confirmed</h3>
-
-            <p className="text-4xl font-bold text-info">
-              {confirmedAppointments.length}
-            </p>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow border">
-          <div className="card-body">
-            <h3 className="font-semibold">Completed</h3>
-
-            <p className="text-4xl font-bold text-success">
-              {completedAppointments.length}
-            </p>
-          </div>
-        </div>
-
-        <div className="card bg-base-100 shadow border">
-          <div className="card-body">
-            <h3 className="font-semibold">Revenue</h3>
-
-            <p className="text-4xl font-bold">৳{totalRevenue}</p>
-          </div>
-        </div>
+        ))}
       </div>
 
-      <div className="mt-10 card bg-base-100 shadow border">
-        <div className="card-body">
-          <h2 className="text-xl font-bold mb-4">Quick Summary</h2>
-
-          <div className="space-y-3">
-            <p>
-              Pending Requests:
-              <strong> {pendingAppointments.length}</strong>
-            </p>
-
-            <p>
-              Confirmed Appointments:
-              <strong> {confirmedAppointments.length}</strong>
-            </p>
-
-            <p>
-              Completed Consultations:
-              <strong> {completedAppointments.length}</strong>
-            </p>
-
-            <p>
-              Cancelled Appointments:
-              <strong> {cancelledAppointments.length}</strong>
-            </p>
+      {/* Quick Summary Card */}
+      <div className="mt-8 bg-base-100 border border-base-300/60 rounded-3xl shadow-sm p-8 hover:shadow-lg hover:shadow-base-300/30 transition-shadow duration-300">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <FaListCheck className="text-lg text-primary" />
           </div>
+          <h2 className="text-xl font-bold tracking-tight">Quick Summary</h2>
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-4">
+          {summaryItems.map(({ label, value, color }) => (
+            <div
+              key={label}
+              className="flex items-center justify-between bg-base-200/50 border border-base-300/30 rounded-2xl px-5 py-4 hover:shadow-sm transition-shadow duration-200"
+            >
+              <div className="flex items-center gap-3">
+                <FaCircleDot className={`text-sm text-${color}`} />
+                <span className="text-sm font-medium opacity-70">{label}</span>
+              </div>
+              <span className={`text-lg font-extrabold text-${color}`}>
+                {value}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
