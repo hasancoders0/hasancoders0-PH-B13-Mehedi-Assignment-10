@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 import { addDoctor } from "@/services/admin-doctor.service";
 
@@ -14,32 +15,41 @@ export default function AddDoctorPage() {
 
     const doctorData = {
       name: form.name.value,
-      specialty: form.specialty.value,
+      email: form.email.value,
+
+      specialization: form.specialization.value,
+
       hospital: form.hospital.value,
+
       experience: form.experience.value,
-      fee: Number(form.fee.value),
-      image: form.image.value,
-      rating: 4.8,
-      availableDays: ["Sunday", "Monday", "Tuesday"],
+
+      consultationFee: Number(form.consultationFee.value),
+
+      photoURL: form.photoURL.value,
+
+      qualification: form.qualification.value,
+
+      about: form.about.value,
+
+      availableDays: [],
+
+      availableTimes: [],
+
+      createdAt: new Date(),
     };
 
     await addDoctor(doctorData);
 
-    alert("Doctor added successfully!");
+    toast.success("Doctor added successfully!");
 
     router.push("/dashboard/admin/doctors");
   };
 
   return (
     <div className="max-w-3xl mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-8">
-        Add New Doctor
-      </h1>
+      <h1 className="text-3xl font-bold mb-8">Add New Doctor</h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4"
-      >
+      <form onSubmit={handleSubmit} className="space-y-4">
         <input
           name="name"
           placeholder="Doctor Name"
@@ -48,44 +58,58 @@ export default function AddDoctorPage() {
         />
 
         <input
-          name="specialty"
-          placeholder="Specialty"
+          name="email"
+          type="email"
+          placeholder="Doctor Email"
           className="input input-bordered w-full"
           required
+        />
+
+        <input
+          name="specialization"
+          placeholder="Specialization"
+          className="input input-bordered w-full"
+          required
+        />
+
+        <input
+          name="qualification"
+          placeholder="Qualification"
+          className="input input-bordered w-full"
         />
 
         <input
           name="hospital"
           placeholder="Hospital"
           className="input input-bordered w-full"
-          required
         />
 
         <input
           name="experience"
-          placeholder="Experience (e.g. 10 Years)"
+          placeholder="Experience"
           className="input input-bordered w-full"
-          required
         />
 
         <input
-          name="fee"
+          name="consultationFee"
           type="number"
           placeholder="Consultation Fee"
           className="input input-bordered w-full"
-          required
         />
 
         <input
-          name="image"
-          placeholder="Image URL"
+          name="photoURL"
+          placeholder="Photo URL"
           className="input input-bordered w-full"
-          required
         />
 
-        <button className="btn btn-primary">
-          Add Doctor
-        </button>
+        <textarea
+          name="about"
+          placeholder="About Doctor"
+          className="textarea textarea-bordered w-full"
+        />
+        
+        <button className="btn btn-primary">Add Doctor</button>
       </form>
     </div>
   );

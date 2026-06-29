@@ -1,13 +1,25 @@
-export default function Home() {
-  return (
-    <main className="container mx-auto px-4 py-20 text-center">
-      <h1 className="text-5xl font-bold">
-        MediCare Connect
-      </h1>
+import Hero from "@/components/home/Hero";
+import Stats from "@/components/home/Stats";
+import Features from "@/components/home/Features";
+import TopDoctors from "@/components/home/TopDoctors";
+import HowItWorks from "@/components/home/HowItWorks";
+import Testimonials from "@/components/home/Testimonials";
+import CTA from "@/components/home/CTA";
+import FAQ from "@/components/home/FAQ";
+import Newsletter from "@/components/home/Newsletter";
 
-      <p className="mt-4 text-lg">
-        Hospital Appointment & Healthcare Management System
-      </p>
-    </main>
+export default function HomePage() {
+  return (
+    <>
+      <Hero />
+      <Stats />
+      <Features />
+      <TopDoctors />
+      <HowItWorks />
+      <Testimonials />
+      <CTA />
+      <FAQ />
+      <Newsletter />
+    </>
   );
 }

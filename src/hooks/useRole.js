@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+
+import axiosSecure from "@/lib/axiosSecure";
 import useAuth from "./useAuth";
 
 export default function useRole() {
@@ -12,26 +13,21 @@ export default function useRole() {
 
   useEffect(() => {
     if (!user?.email) {
+      setRole(null);
       setLoading(false);
       return;
     }
 
     const fetchRole = async () => {
       try {
-        const token = localStorage.getItem("access-token");
-
-        const res = await axios.get(
-          `http://localhost:5000/api/users/${user.email}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        const res = await axiosSecure.get(
+          `/api/users/${user.email}`
         );
 
         setRole(res.data.user.role);
       } catch (error) {
         console.error(error);
+        setRole(null);
       } finally {
         setLoading(false);
       }
@@ -40,5 +36,8 @@ export default function useRole() {
     fetchRole();
   }, [user]);
 
-  return { role, loading };
+  return {
+    role,
+    loading,
+  };
 }

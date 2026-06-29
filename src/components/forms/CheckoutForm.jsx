@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 import {
@@ -62,7 +62,7 @@ export default function CheckoutForm({
         appointmentId
       );
 
-      alert("Payment successful!");
+      toast.success("Payment successful!");
 
       router.push(
         "/dashboard/patient"

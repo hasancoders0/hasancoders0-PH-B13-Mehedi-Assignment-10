@@ -14,8 +14,24 @@ export const getAllUsers = async () => {
   return data.users;
 };
 
-export const makeAdmin = async (id) => {
-  const { data } = await axios.patch(`${API_URL}/api/admin/users/${id}/admin`);
+export const suspendUser = async (id) => {
+  const { data } = await axios.patch(
+    `${API_URL}/api/admin/users/${id}/suspend`,
+  );
+
+  return data;
+};
+
+export const activateUser = async (id) => {
+  const { data } = await axios.patch(
+    `${API_URL}/api/admin/users/${id}/activate`,
+  );
+
+  return data;
+};
+
+export const deleteUser = async (id) => {
+  const { data } = await axios.delete(`${API_URL}/api/admin/users/${id}`);
 
   return data;
 };

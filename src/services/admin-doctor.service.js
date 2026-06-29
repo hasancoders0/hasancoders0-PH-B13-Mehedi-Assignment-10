@@ -14,6 +14,18 @@ export const addDoctor = async (doctorData) => {
   return data;
 };
 
+export const verifyDoctor = async (id) => {
+  const { data } = await axios.patch(`${API_URL}/api/doctors/${id}/verify`);
+
+  return data;
+};
+
+export const unverifyDoctor = async (id) => {
+  const { data } = await axios.patch(`${API_URL}/api/doctors/${id}/unverify`);
+
+  return data;
+};
+
 export const deleteDoctor = async (id) => {
   const { data } = await axios.delete(`${API_URL}/api/doctors/${id}`);
 
