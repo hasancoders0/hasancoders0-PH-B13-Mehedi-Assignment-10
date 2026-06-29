@@ -2,6 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  FaCalendarDays,
+  FaHospitalUser,
+  FaClock,
+  FaMoneyBillWave,
+  FaReceipt,
+  FaCircleCheck,
+  FaFlagCheckered,
+  FaCircleXmark,
+  FaCalendarPlus,
+  FaStar,
+  FaFileMedical,
+  FaPen,
+  FaVirus,
+} from "react-icons/fa6";
 
 import useAuth from "@/hooks/useAuth";
 
@@ -26,36 +41,25 @@ const initialModalState = {
 
 export default function DoctorRequestsPage() {
   const router = useRouter();
-
   const { user } = useAuth();
 
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [confirmModal, setConfirmModal] = useState(initialModalState);
-
   const [rescheduleModal, setRescheduleModal] = useState({
     open: false,
     appointment: null,
   });
 
-  const closeConfirmModal = () => {
-    setConfirmModal(initialModalState);
-  };
-
-  const closeRescheduleModal = () => {
-    setRescheduleModal({
-      open: false,
-      appointment: null,
-    });
-  };
+  const closeConfirmModal = () => setConfirmModal(initialModalState);
+  const closeRescheduleModal = () =>
+    setRescheduleModal({ open: false, appointment: null });
 
   const loadAppointments = async () => {
     try {
       if (!user?.email) return;
-
       const data = await getDoctorAppointments(user.email);
-
       setAppointments(data);
     } catch (error) {
       console.error(error);
@@ -71,7 +75,6 @@ export default function DoctorRequestsPage() {
   const handleConfirm = async (id) => {
     try {
       await updateAppointmentStatus(id, "confirmed");
-
       loadAppointments();
     } catch (error) {
       console.error(error);
@@ -86,13 +89,10 @@ export default function DoctorRequestsPage() {
         "You will be redirected to create a prescription after completing this appointment.",
       confirmText: "Complete",
       confirmClass: "btn-primary",
-
       onConfirm: async () => {
         try {
           await updateAppointmentStatus(id, "completed");
-
           closeConfirmModal();
-
           router.push(`/dashboard/doctor/prescriptions/new/${id}`);
         } catch (error) {
           console.error(error);
@@ -108,13 +108,10 @@ export default function DoctorRequestsPage() {
       message: "Are you sure you want to cancel this appointment?",
       confirmText: "Cancel",
       confirmClass: "btn-error",
-
       onConfirm: async () => {
         try {
           await cancelAppointment(id);
-
           closeConfirmModal();
-
           loadAppointments();
         } catch (error) {
           console.error(error);
@@ -124,10 +121,7 @@ export default function DoctorRequestsPage() {
   };
 
   const handleReschedule = (appointment) => {
-    setRescheduleModal({
-      open: true,
-      appointment,
-    });
+    setRescheduleModal({ open: true, appointment });
   };
 
   const submitReschedule = async (scheduleData) => {
@@ -136,9 +130,7 @@ export default function DoctorRequestsPage() {
         rescheduleModal.appointment._id,
         scheduleData,
       );
-
       closeRescheduleModal();
-
       loadAppointments();
     } catch (error) {
       console.error(error);
@@ -146,40 +138,88 @@ export default function DoctorRequestsPage() {
   };
 
   if (loading) {
-    return <div className="text-center py-20">Loading appointments...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
   }
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">Appointment Requests</h1>
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight">
+            Appointment Requests
+          </h1>
+          <p className="text-sm opacity-50 mt-1 font-light">
+            Manage incoming and active patient appointments.
+          </p>
+        </div>
 
-        <span className="badge badge-lg">Total: {appointments.length}</span>
+        <div className="bg-base-100 border border-base-300/60 rounded-2xl px-5 py-3 shadow-sm">
+          <p className="text-xs font-bold uppercase tracking-widest opacity-40">
+            Total Requests
+          </p>
+          <p className="text-2xl font-extrabold tracking-tight text-primary">
+            {appointments.length}
+          </p>
+        </div>
       </div>
 
       {appointments.length === 0 ? (
-        <div className="text-center py-20">No appointment requests found.</div>
+        /* Empty State */
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="w-20 h-20 rounded-3xl bg-base-200 flex items-center justify-center mb-6">
+            <FaCalendarDays className="text-3xl text-base-content/30" />
+          </div>
+          <h3 className="text-2xl font-bold tracking-tight">
+            No appointments found
+          </h3>
+          <p className="opacity-50 mt-2 text-sm font-light">
+            You don&apos;t have any appointment requests yet.
+          </p>
+        </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-5">
           {appointments.map((appointment) => (
             <div
               key={appointment._id}
-              className="card bg-base-100 shadow border"
+              className="group bg-base-100 border border-base-300/60 rounded-3xl shadow-sm hover:shadow-xl hover:shadow-base-300/40 hover:-translate-y-0.5 transition-all duration-300 overflow-hidden"
             >
-              <div className="card-body">
-                <div className="flex justify-between gap-6">
-                  {/* Left Side */}
+              {/* Top Accent Line */}
+              <div
+                className={`h-1 ${
+                  appointment.status === "completed"
+                    ? "bg-success/60"
+                    : appointment.status === "confirmed"
+                      ? "bg-info/60"
+                      : appointment.status === "cancelled"
+                        ? "bg-error/60"
+                        : "bg-warning/60"
+                }`}
+              />
+
+              <div className="p-6 lg:p-8">
+                {/* Header Info */}
+                <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                  {/* Left Content */}
                   <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <h2 className="text-2xl font-bold">
+                    <div className="flex flex-wrap items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                        <FaHospitalUser className="text-sm text-primary" />
+                      </div>
+
+                      <h2 className="text-xl font-extrabold tracking-tight">
                         {appointment.patientName}
                       </h2>
 
                       <span
-                        className={`badge ${
+                        className={`badge border-0 text-xs font-medium ${
                           appointment.paymentStatus === "paid"
-                            ? "badge-success"
-                            : "badge-warning"
+                            ? "bg-success/10 text-success"
+                            : "bg-warning/10 text-warning"
                         }`}
                       >
                         {appointment.paymentStatus === "paid"
@@ -188,37 +228,58 @@ export default function DoctorRequestsPage() {
                       </span>
                     </div>
 
-                    <div className="flex flex-wrap gap-6 mb-4 text-sm">
-                      <span>Date: {appointment.appointmentDate}</span>
+                    <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm mb-5">
+                      <div className="flex items-center gap-2 text-base-content/60">
+                        <FaCalendarDays className="text-xs opacity-60" />
+                        <span className="font-light">
+                          {appointment.appointmentDate}
+                        </span>
+                      </div>
 
-                      <span>Time: {appointment.appointmentTime}</span>
+                      <div className="flex items-center gap-2 text-base-content/60">
+                        <FaClock className="text-xs opacity-60" />
+                        <span className="font-light">
+                          {appointment.appointmentTime}
+                        </span>
+                      </div>
 
-                      <span>Fee: ৳{appointment.consultationFee}</span>
+                      <div className="flex items-center gap-2 text-primary font-semibold">
+                        <FaMoneyBillWave className="text-xs" />
+                        <span>৳{appointment.consultationFee}</span>
+                      </div>
                     </div>
 
                     {appointment.symptoms && (
-                      <div className="border rounded p-3">
-                        <strong>Symptoms:</strong> {appointment.symptoms}
+                      <div className="bg-base-200/50 border border-base-300/30 rounded-2xl p-4 mb-4 text-sm">
+                        <p className="text-xs font-bold uppercase tracking-widest opacity-40 mb-1">
+                          Symptoms
+                        </p>
+                        <p className="text-base-content/70 font-light leading-relaxed flex items-start gap-2">
+                          <FaVirus className="text-xs opacity-50 mt-1 shrink-0" />
+                          {appointment.symptoms}
+                        </p>
                       </div>
                     )}
+
                     {appointment.transactionId && (
-                      <p className="mt-3 text-sm opacity-70">
-                        Transaction ID: {appointment.transactionId}
-                      </p>
+                      <div className="flex items-center gap-2 text-xs text-base-content/40 font-mono">
+                        <FaReceipt />
+                        {appointment.transactionId}
+                      </div>
                     )}
                   </div>
 
-                  {/* Right Side */}
-                  <div className="flex flex-col items-end gap-3">
+                  {/* Right Status Badge */}
+                  <div className="shrink-0">
                     <span
-                      className={`badge ${
+                      className={`badge border-0 text-xs font-medium capitalize ${
                         appointment.status === "completed"
-                          ? "badge-success"
+                          ? "bg-success/10 text-success"
                           : appointment.status === "confirmed"
-                            ? "badge-info"
+                            ? "bg-info/10 text-info"
                             : appointment.status === "cancelled"
-                              ? "badge-error"
-                              : "badge-warning"
+                              ? "bg-error/10 text-error"
+                              : "bg-warning/10 text-warning"
                       }`}
                     >
                       {appointment.status}
@@ -226,29 +287,34 @@ export default function DoctorRequestsPage() {
                   </div>
                 </div>
 
-                <div className="divider my-2"></div>
+                {/* Divider */}
+                <div className="divider my-6 before:bg-base-300/50 after:bg-base-300/50" />
 
+                {/* Actions */}
                 <div className="flex flex-wrap gap-2">
                   {appointment.status === "pending" && (
                     <>
                       <button
-                        className="btn btn-success btn-sm"
+                        className="btn btn-sm bg-success/10 text-success border-0 hover:bg-success/20 gap-2 rounded-xl transition-colors duration-200"
                         onClick={() => handleConfirm(appointment._id)}
                       >
+                        <FaCircleCheck className="text-xs" />
                         Accept
                       </button>
 
                       <button
-                        className="btn btn-outline btn-sm"
+                        className="btn btn-sm bg-info/10 text-info border-0 hover:bg-info/20 gap-2 rounded-xl transition-colors duration-200"
                         onClick={() => handleReschedule(appointment)}
                       >
+                        <FaCalendarPlus className="text-xs" />
                         Reschedule
                       </button>
 
                       <button
-                        className="btn btn-error btn-sm"
+                        className="btn btn-sm bg-error/10 text-error border-0 hover:bg-error/20 gap-2 rounded-xl transition-colors duration-200"
                         onClick={() => handleCancel(appointment._id)}
                       >
+                        <FaCircleXmark className="text-xs" />
                         Reject
                       </button>
                     </>
@@ -257,23 +323,26 @@ export default function DoctorRequestsPage() {
                   {appointment.status === "confirmed" && (
                     <>
                       <button
-                        className="btn btn-primary btn-sm"
+                        className="btn btn-sm bg-primary/10 text-primary border-0 hover:bg-primary/20 gap-2 rounded-xl transition-colors duration-200"
                         onClick={() => handleComplete(appointment._id)}
                       >
+                        <FaFlagCheckered className="text-xs" />
                         Complete
                       </button>
 
                       <button
-                        className="btn btn-outline btn-sm"
+                        className="btn btn-sm bg-info/10 text-info border-0 hover:bg-info/20 gap-2 rounded-xl transition-colors duration-200"
                         onClick={() => handleReschedule(appointment)}
                       >
+                        <FaCalendarPlus className="text-xs" />
                         Reschedule
                       </button>
 
                       <button
-                        className="btn btn-error btn-sm"
+                        className="btn btn-sm bg-error/10 text-error border-0 hover:bg-error/20 gap-2 rounded-xl transition-colors duration-200"
                         onClick={() => handleCancel(appointment._id)}
                       >
+                        <FaCircleXmark className="text-xs" />
                         Cancel
                       </button>
                     </>
@@ -283,11 +352,12 @@ export default function DoctorRequestsPage() {
                     <>
                       {appointment.hasReview && (
                         <button
-                          className="btn btn-accent btn-sm"
+                          className="btn btn-sm bg-warning/10 text-warning border-0 hover:bg-warning/20 gap-2 rounded-xl transition-colors duration-200"
                           onClick={() =>
                             router.push(`/dashboard/reviews/${appointment._id}`)
                           }
                         >
+                          <FaStar className="text-xs" />
                           View Review
                         </button>
                       )}
@@ -295,36 +365,39 @@ export default function DoctorRequestsPage() {
                       {appointment.hasPrescription ? (
                         <>
                           <button
-                            className="btn btn-info btn-sm"
+                            className="btn btn-sm bg-info/10 text-info border-0 hover:bg-info/20 gap-2 rounded-xl transition-colors duration-200"
                             onClick={() =>
                               router.push(
                                 `/dashboard/doctor/prescriptions/${appointment.prescriptionId}`,
                               )
                             }
                           >
+                            <FaFileMedical className="text-xs" />
                             View Prescription
                           </button>
 
                           <button
-                            className="btn btn-warning btn-sm"
+                            className="btn btn-sm bg-warning/10 text-warning border-0 hover:bg-warning/20 gap-2 rounded-xl transition-colors duration-200"
                             onClick={() =>
                               router.push(
                                 `/dashboard/doctor/prescriptions/edit/${appointment.prescriptionId}`,
                               )
                             }
                           >
+                            <FaPen className="text-xs" />
                             Edit Prescription
                           </button>
                         </>
                       ) : (
                         <button
-                          className="btn btn-secondary btn-sm"
+                          className="btn btn-sm bg-primary/10 text-primary border-0 hover:bg-primary/20 gap-2 rounded-xl transition-colors duration-200"
                           onClick={() =>
                             router.push(
                               `/dashboard/doctor/prescriptions/new/${appointment._id}`,
                             )
                           }
                         >
+                          <FaFileMedical className="text-xs" />
                           Write Prescription
                         </button>
                       )}
@@ -332,7 +405,7 @@ export default function DoctorRequestsPage() {
                   )}
 
                   {appointment.status === "cancelled" && (
-                    <span className="text-sm opacity-70">
+                    <span className="text-sm opacity-30 font-light italic self-center ml-2">
                       No actions available
                     </span>
                   )}

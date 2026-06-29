@@ -1,6 +1,13 @@
 "use client";
+
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
+import {
+  FaCalendarDays,
+  FaClock,
+  FaFloppyDisk,
+  FaCheck,
+} from "react-icons/fa6";
 
 import useAuth from "@/hooks/useAuth";
 
@@ -34,13 +41,10 @@ export default function DoctorSchedulePage() {
   const { user } = useAuth();
 
   const [doctor, setDoctor] = useState(null);
-
   const [availableDays, setAvailableDays] = useState([]);
-
   const [availableTimes, setAvailableTimes] = useState([]);
 
   const [loading, setLoading] = useState(true);
-
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -53,7 +57,6 @@ export default function DoctorSchedulePage() {
         setDoctor(doctorData);
 
         setAvailableDays(doctorData.availableDays || []);
-
         setAvailableTimes(doctorData.availableTimes || []);
       } catch (error) {
         console.error(error);
@@ -84,13 +87,11 @@ export default function DoctorSchedulePage() {
 
     if (availableDays.length === 0) {
       toast.error("Please select at least one day.");
-
       return;
     }
 
     if (availableTimes.length === 0) {
       toast.error("Please select at least one time slot.");
-
       return;
     }
 
@@ -113,68 +114,114 @@ export default function DoctorSchedulePage() {
   };
 
   if (loading) {
-    return <div className="text-center py-20">Loading schedule...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
   }
 
   return (
     <div className="max-w-5xl">
-      <h1 className="text-3xl font-bold mb-2">Manage Schedule</h1>
+      {/* Page Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold tracking-tight">
+          Manage Schedule
+        </h1>
+        <p className="text-sm opacity-50 mt-1 font-light">
+          Select your available days and consultation time slots.
+        </p>
+      </div>
 
-      <p className="text-gray-500 mb-8">
-        Select your available days and consultation time slots.
-      </p>
+      {/* Schedule Card */}
+      <form
+        onSubmit={handleSubmit}
+        className="bg-base-100 border border-base-300/60 rounded-3xl shadow-sm p-8 lg:p-10 space-y-10"
+      >
+        {/* Available Days */}
+        <div>
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+              <FaCalendarDays className="text-sm text-primary" />
+            </div>
+            <h2 className="text-lg font-bold tracking-tight">Available Days</h2>
+          </div>
 
-      <form onSubmit={handleSubmit} className="card bg-base-100 shadow-lg">
-        <div className="card-body">
-          <div className="mb-10">
-            <h2 className="text-xl font-semibold mb-4">Available Days</h2>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {DAYS.map((day) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {DAYS.map((day) => {
+              const isActive = availableDays.includes(day);
+              return (
                 <label
                   key={day}
-                  className="flex items-center gap-3 cursor-pointer"
+                  className={`flex items-center justify-center gap-2.5 p-3.5 rounded-xl border cursor-pointer transition-all duration-200 font-medium text-sm ${
+                    isActive
+                      ? "bg-primary/10 border-primary text-primary shadow-sm"
+                      : "border-base-300/60 hover:border-primary/50 hover:bg-primary/5 text-base-content/70"
+                  }`}
                 >
                   <input
                     type="checkbox"
-                    className="checkbox checkbox-primary"
-                    checked={availableDays.includes(day)}
+                    className="hidden"
+                    checked={isActive}
                     onChange={() => toggleDay(day)}
                   />
-
+                  {isActive && <FaCheck className="text-xs" />}
                   <span>{day}</span>
                 </label>
-              ))}
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Available Time Slots */}
+        <div>
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+              <FaClock className="text-sm text-primary" />
             </div>
+            <h2 className="text-lg font-bold tracking-tight">
+              Available Time Slots
+            </h2>
           </div>
 
-          <div className="mb-10">
-            <h2 className="text-xl font-semibold mb-4">Available Time Slots</h2>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {TIMES.map((time) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {TIMES.map((time) => {
+              const isActive = availableTimes.includes(time);
+              return (
                 <label
                   key={time}
-                  className="flex items-center gap-3 cursor-pointer"
+                  className={`flex items-center justify-center gap-2.5 p-3.5 rounded-xl border cursor-pointer transition-all duration-200 font-medium text-sm ${
+                    isActive
+                      ? "bg-primary/10 border-primary text-primary shadow-sm"
+                      : "border-base-300/60 hover:border-primary/50 hover:bg-primary/5 text-base-content/70"
+                  }`}
                 >
                   <input
                     type="checkbox"
-                    className="checkbox checkbox-primary"
-                    checked={availableTimes.includes(time)}
+                    className="hidden"
+                    checked={isActive}
                     onChange={() => toggleTime(time)}
                   />
-
+                  {isActive && <FaCheck className="text-xs" />}
                   <span>{time}</span>
                 </label>
-              ))}
-            </div>
+              );
+            })}
           </div>
+        </div>
 
+        {/* Submit Button */}
+        <div className="pt-2">
           <button
             type="submit"
             disabled={saving}
-            className="btn btn-primary w-fit"
+            className="btn btn-primary rounded-xl shadow-lg shadow-primary/25 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99] transition-all duration-200 gap-2"
           >
+            {saving ? (
+              <span className="loading loading-spinner loading-sm"></span>
+            ) : (
+              <FaFloppyDisk className="text-sm" />
+            )}
             {saving ? "Saving..." : "Save Schedule"}
           </button>
         </div>
