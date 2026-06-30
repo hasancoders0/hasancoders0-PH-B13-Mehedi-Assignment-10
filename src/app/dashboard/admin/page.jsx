@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import {
   FaUsers,
-  FaHospitalUser,
-  FaUserDoctor,
-  FaCalendarDays,
-  FaCircleCheck,
+  FaUserInjured,
+  FaUserMd,
+  FaCalendarAlt,
+  FaCheckCircle,
   FaClock,
-  FaCircleXmark,
-  FaMoneyCheckDollar,
+  FaTimesCircle,
+  FaMoneyCheckAlt,
   FaStar,
-} from "react-icons/fa6";
+} from "react-icons/fa";
 
 import { getDashboardStats } from "@/services/admin.service";
 
@@ -25,25 +25,25 @@ const statCards = [
   {
     key: "totalPatients",
     label: "Total Patients",
-    icon: FaHospitalUser,
+    icon: FaUserInjured,
     color: "secondary",
   },
   {
     key: "totalDoctors",
     label: "Total Doctors",
-    icon: FaUserDoctor,
+    icon: FaUserMd,
     color: "accent",
   },
   {
     key: "totalAppointments",
     label: "Appointments",
-    icon: FaCalendarDays,
+    icon: FaCalendarAlt,
     color: "info",
   },
   {
     key: "completedAppointments",
     label: "Completed",
-    icon: FaCircleCheck,
+    icon: FaCheckCircle,
     color: "success",
   },
   {
@@ -55,13 +55,13 @@ const statCards = [
   {
     key: "cancelledAppointments",
     label: "Cancelled",
-    icon: FaCircleXmark,
+    icon: FaTimesCircle,
     color: "error",
   },
   {
     key: "totalRevenue",
     label: "Total Revenue",
-    icon: FaMoneyCheckDollar,
+    icon: FaMoneyCheckAlt,
     color: "primary",
     prefix: "৳ ",
   },

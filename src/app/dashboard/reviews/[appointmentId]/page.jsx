@@ -7,11 +7,11 @@ import {
   FaStar,
   FaUser,
   FaStethoscope,
-  FaCalendarDays,
+  FaCalendarAlt,
   FaPen,
-  FaCircleXmark,
+  FaTimesCircle,
   FaEnvelope,
-} from "react-icons/fa6";
+} from "react-icons/fa";
 
 import useAuth from "@/hooks/useAuth";
 
@@ -53,7 +53,7 @@ export default function ReviewDetailsPage() {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <div className="w-20 h-20 rounded-3xl bg-error/10 flex items-center justify-center mb-6">
-          <FaCircleXmark className="text-3xl text-error" />
+          <FaTimesCircle className="text-3xl text-error" />
         </div>
         <h3 className="text-2xl font-bold tracking-tight">Review not found</h3>
         <p className="opacity-50 mt-2 text-sm font-light">
@@ -169,13 +169,13 @@ export default function ReviewDetailsPage() {
         {/* Timestamps */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 pt-4 border-t border-base-300/50">
           <div className="flex items-center gap-2 text-xs opacity-40 font-light">
-            <FaCalendarDays className="text-xs opacity-60" />
+            <FaCalendarAlt className="text-xs opacity-60" />
             <span>Created: {new Date(review.createdAt).toLocaleString()}</span>
           </div>
 
           {review.updatedAt && (
             <div className="flex items-center gap-2 text-xs opacity-40 font-light">
-              <FaCalendarDays className="text-xs opacity-60" />
+              <FaCalendarAlt className="text-xs opacity-60" />
               <span>
                 Updated: {new Date(review.updatedAt).toLocaleString()}
               </span>

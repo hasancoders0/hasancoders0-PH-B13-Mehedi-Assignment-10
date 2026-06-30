@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import {
-  FaUserDoctor,
-  FaCircleCheck,
-  FaCircleXmark,
+  FaUserMd,
+  FaCheckCircle,
+  FaTimesCircle,
   FaClipboardList,
-} from "react-icons/fa6";
+} from "react-icons/fa";;
 
 import ConfirmModal from "@/components/shared/ConfirmModal";
 
@@ -111,7 +111,7 @@ export default function DoctorRequestsPage() {
         /* Empty State */
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <div className="w-20 h-20 rounded-3xl bg-base-200 flex items-center justify-center mb-6">
-            <FaClipboardList className="text-3xl text-base-content/30" />
+            <FaClipboardList className="text-3xl text-primary/50" />
           </div>
           <h3 className="text-2xl font-bold tracking-tight">
             No requests found
@@ -191,7 +191,7 @@ export default function DoctorRequestsPage() {
                             onClick={() => handleApprove(request._id)}
                             title="Approve Request"
                           >
-                            <FaCircleCheck className="text-xs" />
+                            <FaCheckCircle className="text-xs" />
                           </button>
 
                           <button
@@ -199,7 +199,7 @@ export default function DoctorRequestsPage() {
                             onClick={() => handleReject(request._id)}
                             title="Reject Request"
                           >
-                            <FaCircleXmark className="text-xs" />
+                            <FaTimesCircle className="text-xs" />
                           </button>
                         </div>
                       ) : (

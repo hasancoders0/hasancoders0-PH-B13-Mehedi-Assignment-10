@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import {
-  FaCircleXmark,
-  FaTriangleExclamation,
+  FaTimesCircle,
+  FaExclamationTriangle,
   FaArrowRight,
-  FaSquares2X2,
-} from "react-icons/fa6";
+  FaTachometerAlt,
+} from "react-icons/fa";
 
 export default function PaymentCancelPage() {
   return (
@@ -18,7 +18,7 @@ export default function PaymentCancelPage() {
         <div className="bg-base-100 border border-base-300/60 rounded-3xl shadow-2xl shadow-base-300/20 p-10 text-center">
           {/* Error Icon */}
           <div className="mx-auto w-20 h-20 rounded-full bg-error/10 flex items-center justify-center mb-6 animate-bounce">
-            <FaCircleXmark className="text-4xl text-error" />
+            <FaTimesCircle className="text-4xl text-error" />
           </div>
 
           <h1 className="text-3xl font-extrabold tracking-tight text-error">
@@ -32,7 +32,7 @@ export default function PaymentCancelPage() {
 
           {/* Warning Box */}
           <div className="mt-8 bg-warning/5 border border-warning/20 rounded-2xl px-5 py-4 inline-flex items-center gap-3">
-            <FaTriangleExclamation className="text-warning shrink-0" />
+            <FaExclamationTriangle className="text-warning text-lg shrink-0" />
             <div className="text-left">
               <p className="text-sm text-warning/80 font-light leading-relaxed">
                 You can return to your appointments and complete the payment
@@ -55,7 +55,7 @@ export default function PaymentCancelPage() {
               href="/dashboard/patient"
               className="btn btn-sm bg-base-200 text-base-content border-0 hover:bg-base-300 gap-2 rounded-xl transition-colors duration-200"
             >
-              <FaSquares2X2 className="text-sm" />
+              <FaTachometerAlt className="text-sm" />
               Dashboard
             </Link>
           </div>

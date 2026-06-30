@@ -3,17 +3,17 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  FaCalendarDays,
+  FaCalendarAlt,
   FaStethoscope,
   FaClock,
-  FaMoneyBillWave,
+  FaMoneyBillAlt,
   FaReceipt,
   FaFileMedical,
   FaPen,
   FaStar,
-  FaCircleXmark,
+  FaTimesCircle,
   FaCalendarPlus,
-} from "react-icons/fa6";
+} from "react-icons/fa";
 
 import useAuth from "@/hooks/useAuth";
 
@@ -137,7 +137,7 @@ export default function PatientAppointmentsPage() {
         /* Empty State */
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <div className="w-20 h-20 rounded-3xl bg-base-200 flex items-center justify-center mb-6">
-            <FaCalendarDays className="text-3xl text-base-content/30" />
+            <FaCalendarAlt className="text-3xl text-primary/50" />
           </div>
           <h3 className="text-2xl font-bold tracking-tight">
             No appointments found
@@ -186,7 +186,7 @@ export default function PatientAppointmentsPage() {
 
                     <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
                       <div className="flex items-center gap-2 text-base-content/60">
-                        <FaCalendarDays className="text-xs opacity-60" />
+                        <FaCalendarAlt className="text-xs opacity-60" />
                         <span className="font-light">
                           {appointment.appointmentDate}
                         </span>
@@ -200,7 +200,7 @@ export default function PatientAppointmentsPage() {
                       </div>
 
                       <div className="flex items-center gap-2 text-primary font-semibold">
-                        <FaMoneyBillWave className="text-xs" />
+                        <FaMoneyBillAlt className="text-xs" />
                         <span>৳{appointment.consultationFee}</span>
                       </div>
                     </div>
@@ -283,7 +283,7 @@ export default function PatientAppointmentsPage() {
                         onClick={() => handleCancel(appointment._id)}
                         className="btn btn-sm bg-error/10 text-error border-0 hover:bg-error/20 gap-2"
                       >
-                        <FaCircleXmark className="text-xs" />
+                        <FaTimesCircle className="text-xs" />
                         Cancel
                       </button>
                     </>

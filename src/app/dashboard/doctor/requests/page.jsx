@@ -3,20 +3,20 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  FaCalendarDays,
-  FaHospitalUser,
+  FaCalendarAlt,
+  FaUserInjured,
   FaClock,
-  FaMoneyBillWave,
+  FaMoneyBillAlt,
   FaReceipt,
-  FaCircleCheck,
+  FaCheckCircle,
   FaFlagCheckered,
-  FaCircleXmark,
+  FaTimesCircle,
   FaCalendarPlus,
   FaStar,
   FaFileMedical,
   FaPen,
-  FaVirus,
-} from "react-icons/fa6";
+  FaNotesMedical,
+} from "react-icons/fa";
 
 import useAuth from "@/hooks/useAuth";
 
@@ -172,7 +172,7 @@ export default function DoctorRequestsPage() {
         /* Empty State */
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <div className="w-20 h-20 rounded-3xl bg-base-200 flex items-center justify-center mb-6">
-            <FaCalendarDays className="text-3xl text-base-content/30" />
+            <FaCalendarAlt className="text-3xl text-primary/50" />
           </div>
           <h3 className="text-2xl font-bold tracking-tight">
             No appointments found
@@ -208,7 +208,7 @@ export default function DoctorRequestsPage() {
                   <div className="flex-1">
                     <div className="flex flex-wrap items-center gap-3 mb-4">
                       <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                        <FaHospitalUser className="text-sm text-primary" />
+                        <FaUserInjured className="text-sm text-primary" />
                       </div>
 
                       <h2 className="text-xl font-extrabold tracking-tight">
@@ -230,7 +230,7 @@ export default function DoctorRequestsPage() {
 
                     <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm mb-5">
                       <div className="flex items-center gap-2 text-base-content/60">
-                        <FaCalendarDays className="text-xs opacity-60" />
+                        <FaCalendarAlt className="text-xs opacity-60" />
                         <span className="font-light">
                           {appointment.appointmentDate}
                         </span>
@@ -244,7 +244,7 @@ export default function DoctorRequestsPage() {
                       </div>
 
                       <div className="flex items-center gap-2 text-primary font-semibold">
-                        <FaMoneyBillWave className="text-xs" />
+                        <FaMoneyBillAlt className="text-xs" />
                         <span>৳{appointment.consultationFee}</span>
                       </div>
                     </div>
@@ -255,7 +255,7 @@ export default function DoctorRequestsPage() {
                           Symptoms
                         </p>
                         <p className="text-base-content/70 font-light leading-relaxed flex items-start gap-2">
-                          <FaVirus className="text-xs opacity-50 mt-1 shrink-0" />
+                          <FaNotesMedical className="text-xs opacity-50 mt-1 shrink-0" />
                           {appointment.symptoms}
                         </p>
                       </div>
@@ -298,7 +298,7 @@ export default function DoctorRequestsPage() {
                         className="btn btn-sm bg-success/10 text-success border-0 hover:bg-success/20 gap-2 rounded-xl transition-colors duration-200"
                         onClick={() => handleConfirm(appointment._id)}
                       >
-                        <FaCircleCheck className="text-xs" />
+                        <FaCheckCircle className="text-xs" />
                         Accept
                       </button>
 
@@ -314,7 +314,7 @@ export default function DoctorRequestsPage() {
                         className="btn btn-sm bg-error/10 text-error border-0 hover:bg-error/20 gap-2 rounded-xl transition-colors duration-200"
                         onClick={() => handleCancel(appointment._id)}
                       >
-                        <FaCircleXmark className="text-xs" />
+                        <FaTimesCircle className="text-xs" />
                         Reject
                       </button>
                     </>

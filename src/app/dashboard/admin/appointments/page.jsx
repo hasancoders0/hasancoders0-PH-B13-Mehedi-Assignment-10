@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import {
-  FaCalendarDays,
-  FaCircleCheck,
-  FaCircleXmark,
+  FaCalendarAlt,
+  FaCheckCircle,
+  FaTimesCircle,
   FaFlagCheckered,
-} from "react-icons/fa6";
+} from "react-icons/fa";
 
 import ConfirmModal from "@/components/shared/ConfirmModal";
 
@@ -123,7 +123,7 @@ export default function AdminAppointmentsPage() {
         /* Empty State */
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <div className="w-20 h-20 rounded-3xl bg-base-200 flex items-center justify-center mb-6">
-            <FaCalendarDays className="text-3xl text-base-content/30" />
+            <FaCalendarAlt className="text-3xl text-primary/50" />
           </div>
           <h3 className="text-2xl font-bold tracking-tight">
             No appointments found
@@ -237,7 +237,7 @@ export default function AdminAppointmentsPage() {
                               }
                               title="Confirm Appointment"
                             >
-                              <FaCircleCheck className="text-xs" />
+                              <FaCheckCircle className="text-xs" />
                             </button>
 
                             <button
@@ -245,7 +245,7 @@ export default function AdminAppointmentsPage() {
                               onClick={() => handleCancel(appointment._id)}
                               title="Cancel Appointment"
                             >
-                              <FaCircleXmark className="text-xs" />
+                              <FaTimesCircle className="text-xs" />
                             </button>
                           </>
                         )}
@@ -259,7 +259,7 @@ export default function AdminAppointmentsPage() {
                               }
                               title="Complete Appointment"
                             >
-                              <FaFlagCheckered className="text-xs" />
+                              <FaCircleXmark className="text-xs" />
                             </button>
 
                             <button
@@ -267,7 +267,7 @@ export default function AdminAppointmentsPage() {
                               onClick={() => handleCancel(appointment._id)}
                               title="Cancel Appointment"
                             >
-                              <FaCircleXmark className="text-xs" />
+                              <FaTimesCircle className="text-xs" />
                             </button>
                           </>
                         )}
