@@ -6,12 +6,12 @@ import {
   FaExclamationTriangle,
   FaArrowRight,
   FaTachometerAlt,
-} from "react-icons/fa";
+} from "react-icons/fa"; 
+
 
 export default function PaymentCancelPage() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Decorative blob */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-error/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-xl relative z-10">
