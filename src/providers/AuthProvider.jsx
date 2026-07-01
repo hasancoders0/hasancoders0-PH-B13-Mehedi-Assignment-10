@@ -45,9 +45,15 @@ export default function AuthProvider({ children }) {
   const loginUser = async (email, password) => {
     const result = await signInWithEmailAndPassword(auth, email, password);
 
+    console.log("Firebase login success");
+
     const token = await getJWTToken(email);
 
+    console.log("Token received:", token);
+
     localStorage.setItem("access-token", token);
+
+    console.log("Stored token:", localStorage.getItem("access-token"));
 
     return result;
   };
@@ -65,6 +71,7 @@ export default function AuthProvider({ children }) {
   };
 
   const logoutUser = () => {
+    localStorage.removeItem("access-token");
     setLoading(true);
     return signOut(auth);
   };
